@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Helpers\IntervalHelper;
 use App\Models\Interval;
 
-class IntervalController
+class IntervalController extends Controller
 {
     /**
      * Get all intervals
@@ -17,13 +17,13 @@ class IntervalController
     {
         return $response->json(Interval::orderBy('start_date', 'ASC')->get());
     }
-
+    
     /**
-     * Store interval Information
      * @param $request
      * @param $response
      * @param $service
      * @return mixed
+     * @throws \Exception
      */
     public function store($request, $response, $service)
     {

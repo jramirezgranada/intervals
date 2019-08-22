@@ -6,6 +6,9 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 class Database
 {
+    /**
+     * Database constructor.
+     */
     public function __construct()
     {
         $capsule = new Capsule();

@@ -6,6 +6,9 @@ final class IntervalTest extends TestCase
 {
     protected $client;
 
+    /**
+     * Setup BASEURL
+     */
     protected function setUp(): void
     {
         $this->client = new GuzzleHttp\Client([
