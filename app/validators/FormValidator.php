@@ -30,35 +30,54 @@ class FormValidator implements ValidatorInterface
      */
     public function validate()
     {
-        foreach ($this->rules as $field => $rule) {
-            switch ($rule) {
-                case 'required':
-                    if (!isset($this->data[$field]) || empty($this->data[$field])) {
-                        $this->addError($field, "$field is a mandantory field");
-                    }
-                    break;
+        foreach ($this->rules as $field => $rules) {
 
-                case 'email':
-                    if (is_array($this->data[$field])) {
-                        foreach ($this->data[$field] as $value) {
-                            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                                $this->addError($field, "$field must be a valid email address");
+            foreach ($rules as $rule) {
+                $otherFields = explode('|', $rule);
+
+                switch ($otherFields[0]) {
+                    case 'required':
+                        if (!isset($this->data[$field]) || empty($this->data[$field])) {
+                            $this->addError($field, "$field is a mandantory field");
+                        }
+                        break;
+
+                    case 'integer':
+                        if (isset($this->data[$field])) {
+                            if (!filter_var($this->data[$field], FILTER_VALIDATE_INT)) {
+                                $this->addError($field, "$field must be integer");
                             }
                         }
-                    } else {
-                        if (!filter_var($this->data[$field], FILTER_VALIDATE_EMAIL)) {
-                            $this->addError($field, "$field must be a valid email address");
+                        break;
+
+                    case 'date_greater_than':
+                        if (isset($this->data[$field])) {
+                            if (isset($otherFields[1])) {
+                                if (!isset($this->data[$field]) || $this->data[$field] < $this->data[$otherFields[1]]) {
+                                    $this->addError($field, "$field must be greater than $otherFields[1]");
+                                }
+                            }
                         }
-                    }
+                        break;
 
-                    break;
+                    case 'date':
+                        if (isset($this->data[$field])) {
+                            $timestamp = strtotime($this->data[$field]);
 
-                case 'integer':
-                    if (!filter_var($this->data[$field], FILTER_VALIDATE_INT)) {
-                        $this->addError($field, "$field must be integer");
-                    }
+                            if (!$timestamp) {
+                                $this->addError($field, "$field must be a valid date");
+                            }
+                        }
+                        break;
 
-                    break;
+                    case 'number':
+                        if (isset($this->data[$field])) {
+                            if (!is_numeric($this->data[$field])) {
+                                $this->addError($field, "$field must be numeric");
+                            }
+                        }
+                        break;
+                }
             }
         }
 

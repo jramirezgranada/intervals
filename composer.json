@@ -18,13 +18,13 @@
       "App\\": "app/",
       "App\\Models\\": "app/models/",
       "App\\Controllers\\": "app/controllers/",
-      "App\\Factories\\": "app/factories/",
       "App\\Helpers\\": "app/helpers/",
       "App\\Validators\\": "app/validators/",
       "Klein\\": "Router/"
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^8"
+    "phpunit/phpunit": "^8",
+    "guzzlehttp/guzzle": "~6.0"
   }
 }

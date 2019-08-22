@@ -9,4 +9,4 @@ use App\Models\Database;
 
 new Database();
 
-require 'routes/api.php';
+require 'routes/routes.php';

@@ -137,11 +137,11 @@ class Route
                 $controller = new $class($req, $res, $ser, $app);
                 $controller->$method($req, $res, $ser, $app);
             };
-
-            $this->callback = $callback;
-
-            return $this;
         }
+
+        $this->callback = $callback;
+
+        return $this;
     }
 
     public function runMiddlewares($middlewares)

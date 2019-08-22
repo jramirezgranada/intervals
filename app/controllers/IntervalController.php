@@ -2,7 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Factories\IntervalFactory;
+use App\Helpers\IntervalHelper;
+use App\Models\Interval;
 
 class IntervalController
 {
@@ -14,7 +15,7 @@ class IntervalController
      */
     public function index($request, $response)
     {
-        return $response->json(IntervalFactory::all());
+        return $response->json(Interval::orderBy('start_date', 'ASC')->get());
     }
 
     /**
@@ -26,7 +27,7 @@ class IntervalController
      */
     public function store($request, $response, $service)
     {
-        return $response->json(IntervalFactory::create($request));
+        return $response->json(IntervalHelper::checkDates($request));
     }
 
     /**
@@ -37,7 +38,7 @@ class IntervalController
      */
     public function delete($request, $response)
     {
-        return $response->json(IntervalFactory::delete($request));
+        return $response->json(IntervalHelper::delete($request));
     }
 
     /**
@@ -48,6 +49,23 @@ class IntervalController
      */
     public function update($request, $response)
     {
-        return $response->json(IntervalFactory::update($request));
+        //return $response->json(IntervalFactory::update($request));
+    }
+
+    /**
+     * Feature to truncate intervals table
+     * @param $request
+     * @param $response
+     * @return mixed
+     */
+    public function truncate($request, $response)
+    {
+        Interval::truncate();
+
+        return $response->json([
+            "status" => "Ok",
+            "message" => "Interval Table was truncated",
+            "code" => 200
+        ]);
     }
 }
