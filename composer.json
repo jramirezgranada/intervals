@@ -1,0 +1,30 @@
+{
+  "name": "jramirezgranada/cloudbeds",
+  "description": "Code Challenge - CB",
+  "type": "Project",
+  "authors": [
+    {
+      "name": "Jorge Andres  Ramirez",
+      "email": "jramirezgranada@gmail.com"
+    }
+  ],
+  "require": {
+    "illuminate/database": "^5.8",
+    "vlucas/phpdotenv": "^3.4",
+    "nesbot/carbon": "^2.23"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "App\\Models\\": "app/models/",
+      "App\\Controllers\\": "app/controllers/",
+      "App\\Factories\\": "app/factories/",
+      "App\\Helpers\\": "app/helpers/",
+      "App\\Validators\\": "app/validators/",
+      "Klein\\": "Router/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8"
+  }
+}
