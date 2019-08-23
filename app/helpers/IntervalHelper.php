@@ -41,9 +41,9 @@ class IntervalHelper
             ->delete();
 
         list($start_interval, $end_interval) = self::getIntervals(
-            $interval->date_start,
-            $interval->date_end);
-
+            $interval->start_date,
+            $interval->end_date);
+        
         if (!is_null($start_interval) && $start_interval->is($end_interval) && $start_interval->price != $interval->price) {
             $end_interval = new Interval();
             $end_interval->end_date = $start_interval->end_date;
@@ -124,8 +124,8 @@ class IntervalHelper
     private static function mergeDates($interval)
     {
         list($start_interval, $end_interval) = self::getIntervals(
-            $interval->date_start,
-            $interval->date_end,
+            $interval->start_date,
+            $interval->end_date,
             $interval->price,
             true);
 
@@ -186,18 +186,22 @@ class IntervalHelper
      * @param bool $isMerge
      * @return array
      */
-    private static function getIntervals($date_start, $date_end, $price = null, $isMerge = false)
+    private static function getIntervals($startDate, $endDate, $price = null, $isMerge = false)
     {
-        $start_interval = Interval::where('date_start', '<=', $isMerge ? $date_start->subDay() : $date_start)
-            ->where('date_end', '>=', $isMerge ? $date_start->subDay() : $date_start);
+        $start_interval = Interval::where('start_date', '<=', $isMerge ? $startDate->subDay() : $startDate)
+            ->where('end_date', '>=', $isMerge ? $startDate->subDay() : $startDate);
+
         if (!is_null($price))
             $start_interval = $start_interval->where('price', $price);
+
         $start_interval = $start_interval->first();
 
-        $end_interval = Interval::where('date_start', '<=', $isMerge ? $date_end->addDay() : $date_end)
-            ->where('date_end', '>=', $isMerge ? $date_end->addDay() : $date_end);
+        $end_interval = Interval::where('start_date', '<=', $isMerge ? $endDate->addDay() : $endDate)
+            ->where('end_date', '>=', $isMerge ? $endDate->addDay() : $endDate);
+
         if (!is_null($price))
             $end_interval = $end_interval->where('price', $price);
+
         $end_interval = $end_interval->first();
 
         return [
