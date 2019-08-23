@@ -40,13 +40,9 @@ class IntervalHelper
             ->where('end_date', '<=', $interval->end_date)
             ->delete();
 
-        $start_interval = Interval::where('start_date', '<=', $interval->start_date)
-            ->where('end_date', '>=', $interval->start_date)
-            ->first();
-
-        $end_interval = Interval::where('start_date', '<=', $interval->end_date)
-            ->where('end_date', '>=', $interval->end_date)
-            ->first();
+        list($start_interval, $end_interval) = self::getIntervals(
+            $interval->date_start,
+            $interval->date_end);
 
         if (!is_null($start_interval) && $start_interval->is($end_interval) && $start_interval->price != $interval->price) {
             $end_interval = new Interval();
@@ -127,15 +123,11 @@ class IntervalHelper
      */
     private static function mergeDates($interval)
     {
-        $start_interval = Interval::where('start_date', '<=', $interval->start_date->subDay())
-            ->where('end_date', '>=', $interval->start_date->subDay())
-            ->where('price', $interval->price)
-            ->first();
-
-        $end_interval = Interval::where('start_date', '<=', $interval->end_date->addDay())
-            ->where('end_date', '>=', $interval->end_date->addDay())
-            ->where('price', $interval->price)
-            ->first();
+        list($start_interval, $end_interval) = self::getIntervals(
+            $interval->date_start,
+            $interval->date_end,
+            $interval->price,
+            true);
 
         if (!is_null($start_interval)) {
             $interval->start_date = $start_interval->start_date;
@@ -183,6 +175,34 @@ class IntervalHelper
             "message" => $message,
             "code" => $code,
             "data" => $data
+        ];
+    }
+
+    /**
+     * Get intervals dates
+     * @param $date_start
+     * @param $date_end
+     * @param null $price
+     * @param bool $isMerge
+     * @return array
+     */
+    private static function getIntervals($date_start, $date_end, $price = null, $isMerge = false)
+    {
+        $start_interval = Interval::where('date_start', '<=', $isMerge ? $date_start->subDay() : $date_start)
+            ->where('date_end', '>=', $isMerge ? $date_start->subDay() : $date_start);
+        if (!is_null($price))
+            $start_interval = $start_interval->where('price', $price);
+        $start_interval = $start_interval->first();
+
+        $end_interval = Interval::where('date_start', '<=', $isMerge ? $date_end->addDay() : $date_end)
+            ->where('date_end', '>=', $isMerge ? $date_end->addDay() : $date_end);
+        if (!is_null($price))
+            $end_interval = $end_interval->where('price', $price);
+        $end_interval = $end_interval->first();
+
+        return [
+            $start_interval,
+            $end_interval
         ];
     }
 
